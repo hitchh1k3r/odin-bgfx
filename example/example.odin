@@ -1,6 +1,5 @@
 package example
 
-import "base:runtime"
 import "core:fmt"
 import "core:c"
 import "core:c/libc"
@@ -27,6 +26,8 @@ main :: proc() {
       panic("glfw.CreateWindow failed")
     }
   }
+  defer glfw.DestroyWindow(window)
+  defer glfw.Terminate()
 
   set_backbuffer_size :: proc(window_x : u32, window_y : u32) {
     bgfx.reset(window_x, window_y, { vsync = true })
@@ -60,8 +61,12 @@ main :: proc() {
     bgfx.set_view_clear(0, { .Color, .Depth }, 0x110022FF)
     bgfx.set_debug({ .Text })
   }
+  defer bgfx.shutdown()
+  defer free(settings.callback)
+  defer free(settings.callback.vtbl)
 
   // Init Graphics
+  message_buffer : [32]u8
   message := cstring("Hello from bgfx!")
   vert_buffer : bgfx.VertexBufferHandle
   index_buffer : bgfx.IndexBufferHandle
@@ -127,9 +132,13 @@ main :: proc() {
       fs := bgfx.create_shader(bgfx.make_ref(raw_data(fs_bin), u32(len(fs_bin))))
       program = bgfx.create_program_vert_frag(vs, fs, destroy_shaders = true)
     } else {
-      message = fmt.caprintf("No shaders for: %s", bgfx.get_renderer_name(render_type))
+      fmt.bprintf(message_buffer[:len(message_buffer)-1], "No shaders for: %s", bgfx.get_renderer_name(render_type))
+      message = cstring(&message_buffer[0])
     }
   }
+  defer bgfx.destroy(vert_buffer)
+  defer bgfx.destroy(index_buffer)
+  defer bgfx.destroy(program)
 
   // Main Loop
   last_window_size := window_size

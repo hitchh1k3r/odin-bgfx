@@ -25,7 +25,7 @@ when ODIN_OS == .Windows {
     }
   }
 } else when ODIN_OS == .Linux {
-  when ODIN_DEBUG && #exists("windows/libbgfxDebug.a") {
+  when ODIN_DEBUG && #exists("linux/libbgfxDebug.a") {
     foreign import lib {
       "linux/libbgfxDebug.a",
       "linux/libbimg_decodeDebug.a",

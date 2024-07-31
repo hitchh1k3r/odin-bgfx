@@ -311,7 +311,7 @@ when ODIN_OS == .Windows {
     suspend : bool | 1,                // Suspend rendering
     transparent_backbuffer : bool | 1, // !!ATTENTION!! Check Caps.supported for `.Transparent_Backbuffer`
   }
-  _ResetSettings_MSAA :: enum {
+  _ResetSettings_MSAA :: enum uint {
     Disabled, // No MSAA
     x2,       // Enable 2x MSAA
     x4,       // Enable 4x MSAA
@@ -344,7 +344,7 @@ when ODIN_OS == .Windows {
 
   // Debug Flags (BGFX_DEBUG_*)
   DebugFlags :: bit_set[_DebugFlag; u32]
-  _DebugFlag :: enum {
+  _DebugFlag :: enum uint {
     Wireframe, // Enable wireframe for all primitives
     IFH,       // Enable infinitely fast hardware test
                //   No draw calls will be submitted to driver
@@ -480,7 +480,7 @@ when ODIN_OS == .Windows {
 
     // Supported functionality (BGFX_CAPS_*)
     CapsFlags :: bit_set[_CapsFlag; u64]
-    _CapsFlag :: enum {
+    _CapsFlag :: enum uint {
       Alpha_To_Coverage,         // Alpha to coverage is supported
       Blend_Independent,         // Blend independent is supported
       Compute,                   // Compute shaders are supported
@@ -516,7 +516,7 @@ when ODIN_OS == .Windows {
 
     // Texture format capability flags (BGFX_CAPS_FORMAT_TEXTURE_*)
     CapsFormatTextureFlags :: bit_set[_CapsFormatTextureFlag; u16]
-    _CapsFormatTextureFlag :: enum {
+    _CapsFormatTextureFlag :: enum uint {
       Tex_2D,               // Texture format is supported
       Tex_2D_SRGB,          // Texture as sRGB format is supported
       Tex_2D_Emulated,      // Texture format is emulated
@@ -738,7 +738,7 @@ when ODIN_OS == .Windows {
 
   // Discard Flags (BGFX_DISCARD_*)
   DiscardFlags :: bit_set[_DiscardFlag; u8]
-  _DiscardFlag :: enum {
+  _DiscardFlag :: enum uint {
     Bindings,       // Discard texture sampler and buffer bindings
     Index_Buffer,   // Discard index buffer
     Instance_Data,  // Discard instance data
@@ -872,7 +872,7 @@ when ODIN_OS == .Windows {
 
   // Clear Flags (BGFX_CLEAR_*)
   ClearFlags :: bit_set[_ClearFlag; u16]
-  _ClearFlag :: enum {
+  _ClearFlag :: enum uint {
     Color,           // Clear color
     Depth,           // Clear depth
     Stencil,         // Clear stencil
@@ -1548,9 +1548,9 @@ when ODIN_OS == .Windows {
       conservative_raster : bool | 1,               // Enable conservative rasterization
       _ : u8 | 5,
     }
-    _StateSettings_DepthTest :: enum { Disabled, Less, LEqual, Equal, GEqual, Greater, Not_Equal, Never, Always }
-    _StateSettings_PrimativeType :: enum { Tri_List, Tri_Strip, Line_List, Line_Strip, Point_List }
-    _BlendState_BlendFunction :: enum {
+    _StateSettings_DepthTest :: enum uint { Disabled, Less, LEqual, Equal, GEqual, Greater, Not_Equal, Never, Always }
+    _StateSettings_PrimativeType :: enum uint { Tri_List, Tri_Strip, Line_List, Line_Strip, Point_List }
+    _BlendState_BlendFunction :: enum uint {
       Disabled,
       Zero,           // 0, 0, 0, 0
       One,            // 1, 1, 1, 1
@@ -1566,7 +1566,7 @@ when ODIN_OS == .Windows {
       Factor,         // Blend factor
       Inv_Factor,     // 1-Blend factor
     }
-    _BlendState_BlendEquation :: enum {
+    _BlendState_BlendEquation :: enum uint {
       Add,     // Blend add: src + dst
       Sub,     // Blend subtract: src - dst
       Rev_Sub, // Blend reverse subtract: dst - src
@@ -1624,8 +1624,8 @@ when ODIN_OS == .Windows {
       op_fail_z : _Stencil_Operation | 4, // When stencil test passes, but depth test fails
       op_pass_z : _Stencil_Operation | 4, // When stencil and depth test pass
     }
-    _Stencil_Test :: enum { Disabled, Less, LEqual, Equal, GEqual, Greater, Not_Equal, Never, Always }
-    _Stencil_Operation :: enum { Zero, Keep, Replace, Increment_Wrap, Increment_Clamp, Decrement_Wrap, Decrement_Clamp, Invert }
+    _Stencil_Test :: enum uint { Disabled, Less, LEqual, Equal, GEqual, Greater, Not_Equal, Never, Always }
+    _Stencil_Operation :: enum uint { Zero, Keep, Replace, Increment_Wrap, Increment_Clamp, Decrement_Wrap, Decrement_Clamp, Invert }
 
     STENCIL_NONE :: Stencil(0)
 
@@ -2071,7 +2071,7 @@ when ODIN_OS == .Windows {
       allow_resize : bool | 1,                     // Allow DYNAMIC Index/Vertex Buffers to resize during update
       index_32 : bool | 1,                         // Index buffer contains 32-bit indices
     }
-    _BufferSettings_Format :: enum {
+    _BufferSettings_Format :: enum uint {
       Auto,    // Automatically selects the format and type for a buffer
       b8_x1,   // 1 8-bit value
       b8_x2,   // 2 8-bit values
@@ -2083,7 +2083,7 @@ when ODIN_OS == .Windows {
       b32_x2,  // 2 32-bit values
       b32_x4,  // 4 32-bit values
     }
-    _BufferSettings_Type :: enum {
+    _BufferSettings_Type :: enum uint {
       // NOTE 2024-06-06 Don't use `0`, but most renderer backends will treat `0` and `Int` as the same type
       Int = 1, // Type `int`
       UInt,    // Type `uint`
@@ -2123,8 +2123,8 @@ when ODIN_OS == .Windows {
       // !!ATTENTION!! You must make sure `data` is available for at least 2 frame() calls
       @(link_name="bgfx_make_ref")
       make_ref_static :: proc(
-          data : /* const */ rawptr, // [in ] Pointer to data to be copied
-          size : u32,                // [in ] Size of data
+          data : /* const */ rawptr,             // [in ] Pointer to data to be copied
+          size : u32,                            // [in ] Size of data
         ) -> (/* const */ memory : ^Memory) ---  // [out] New allocated memory
 
       // Make reference to data to pass to bgfx
@@ -2135,7 +2135,7 @@ when ODIN_OS == .Windows {
           size : u32,                                                     // [in ] Size of data
           release_fn : #type proc "c" (ptr : rawptr, user_data : rawptr), // [in ] Callback function to release memory after use
           user_data : rawptr = nil,                                       // [in ] User data to be passed to callback function
-        ) -> (/* const */ memory : ^Memory) ---                                       // [out] New allocated memory
+        ) -> (/* const */ memory : ^Memory) ---                           // [out] New allocated memory
 
     }
 
@@ -2603,29 +2603,29 @@ when ODIN_OS == .Windows {
         srbg : bool | 1,                        // Sample texture as sRGB
         blit_dst : bool | 1,                    // Texture will be used as blit destination
         read_back : bool | 1,                   // Texture will be used for read back from GPU
-      }
+      },
     }
-    _TextureSettings_RenderTarget :: enum { Disabled, No_MSAA, MSAA_x2, MSAA_x4, MSAA_x8, MSAA_x16 }
+    _TextureSettings_RenderTarget :: enum uint { Disabled, No_MSAA, MSAA_x2, MSAA_x4, MSAA_x8, MSAA_x16 }
 
     // Sampler Settings (BGFX_SAMPLER_*)
     SamplerSettings :: bit_field u32 {
-      u_wrap :_SamplerSettings_WrapMode | 2,         // Wrap U mode
-      v_wrap :_SamplerSettings_WrapMode | 2,         // Wrap V mode
-      w_wrap :_SamplerSettings_WrapMode | 2,         // Wrap W mode
-      min_point : _SamplerSettings_SamplingMode | 1, // Min sampling mod
-      min_anisotropic : bool | 1,                    // Min anisotropic filtering
-      mag_point : _SamplerSettings_SamplingMode | 1, // Mag sampling mod
-      mag_anisotropic : bool | 1,                    // Mag anisotropic filtering
-      mip_point : _SamplerSettings_SamplingMode | 1, // Mip sampling mod
+      u_wrap :_SamplerSettings_WrapMode | 2,        // Wrap U mode
+      v_wrap :_SamplerSettings_WrapMode | 2,        // Wrap V mode
+      w_wrap :_SamplerSettings_WrapMode | 2,        // Wrap W mode
+      min_mode : _SamplerSettings_SamplingMode | 1, // Min sampling mod
+      min_anisotropic : bool | 1,                   // Min anisotropic filtering
+      mag_mode : _SamplerSettings_SamplingMode | 1, // Mag sampling mod
+      mag_anisotropic : bool | 1,                   // Mag anisotropic filtering
+      mip_mode : _SamplerSettings_SamplingMode | 1, // Mip sampling mod
       _ : u8 | 4,
-      compare : _SamplerSettings_Compare | 4,        // Depth comparison
-      sample_stencil : bool | 1,                     // Sample stencil instead of depth
+      compare : _SamplerSettings_Compare | 4,       // Depth comparison
+      sample_stencil : bool | 1,                    // Sample stencil instead of depth
       _ : u8 | 3,
-      border_color : PaletteIndex | 4,               // Border color (palette index)
+      border_color : PaletteIndex | 4,              // Border color (palette index)
     }
-    _SamplerSettings_WrapMode :: enum { Repeat, Mirror, Clamp, Border }
-    _SamplerSettings_SamplingMode :: enum { Linear, Point }
-    _SamplerSettings_Compare :: enum { Disabled, Less, LEqual, Equal, GEqual, Greater, Not_Equal, Never, Always }
+    _SamplerSettings_WrapMode :: enum uint { Repeat, Mirror, Clamp, Border }
+    _SamplerSettings_SamplingMode :: enum uint { Linear, Point }
+    _SamplerSettings_Compare :: enum uint { Disabled, Less, LEqual, Equal, GEqual, Greater, Not_Equal, Never, Always }
 
     TEXTURE_SETTINGS_UV_CLAMP :: TextureSettings{ sampler = SamplerSettings(0b0000_000_0_0000_0000_0_0_0_0_0_00_10_10) }
 
@@ -2830,7 +2830,7 @@ when ODIN_OS == .Windows {
 
     // Frame Buffer Initialization Flags (BGFX_RESOLVE_*)
     ResolveFlags :: bit_set[_ResolveFlag; u8]
-    _ResolveFlag :: enum {
+    _ResolveFlag :: enum uint {
       Auto_Gen_Mips, // Auto-generate mip maps on resolve
     }
 
